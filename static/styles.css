@@ -13,3 +13,10 @@ h1 {
     max-width:720px;
     margin: auto;
 }
+
+.sign-in {
+    display: block;
+}
+.sign-out {
+    display: none;
+}
