@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>The Google Authenticate Playground</title>
+    <meta name="description" content="The Google Authenticate Playground">
+    <meta name="author" content="Justin Tadlock">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <meta name="google-signin-client_id" content="{{ client_id }}">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Google Authentication Playground Testing</h1>
+        {% if logged_in %}
+            <div>Currently logged in</div>
+        {% else %}
+            <div>Not currently logged in</div>
+        {% endif %}
+    </div>
+</body>
+</html>
