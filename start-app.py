@@ -1,4 +1,6 @@
 import json
+import requests
+import httplib2
 
 from flask import (
     Flask, 
@@ -21,6 +23,10 @@ try:
     SECRET_DATA = json.loads(open('client_secrets.json', 'r').read())['web']
     CLIENT_ID = SECRET_DATA['client_id']
     CLIENT_SECRET = SECRET_DATA['client_secret']
+
+    # Get the redirect uri from the file in the form of '/url'
+    CLIENT_REDIRECT = SECRET_DATA['redirect_uris'][0]
+    CLIENT_REDIRECT = '/%s' % (CLIENT_REDIRECT.split('/')[-1])
 except:
     print('Error: Please download your \'client_secrets.json\' file from your \'https://console.developers.google.com\' project')
 
@@ -32,9 +38,21 @@ def Is_Authenticated():
     
     return logged_in
 
+@app.route(CLIENT_REDIRECT)
+def Authentication_Callback():
+    # Add authentication logic here
+
+    return redirect(url_for('Index'))
+
 @app.route('/')
 def Index():
     return render_template('index.html', client_id=CLIENT_ID, logged_in=(Is_Authenticated()))
 
+
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.debug = True
+    app.run( 
+        host='0.0.0.0', 
+        port=5000
+    )
