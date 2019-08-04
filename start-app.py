@@ -80,7 +80,16 @@ def Authentication_Callback():
 
 @app.route('/')
 def Index():
-    return render_template('index.html', client_id=CLIENT_ID, authenticated=Is_Authenticated())
+    user_posts = [
+        {"name":"Billy", "secret":"Likes Polka dot patterns, but will never admit it."},
+        {"name":"Bobby", "secret":"Thinks Billy needs a shower."},
+        {"name":"Lauren", "secret":"Wants John to ask her out"},
+        {"name":"John", "secret":"Wants to ask Lauren out, but she's always so cold to him. He's not sure if he should ask her or not."}
+    ]
+
+    print('authenticated: %s' % Is_Authenticated())
+
+    return render_template('index.html', client_id=CLIENT_ID, authenticated=Is_Authenticated(), user_posts=user_posts)
 
 
 
