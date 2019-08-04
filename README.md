@@ -1,6 +1,6 @@
 # google-auth-playground
 
-A repo for testing out the google sign in logic with Flask and Python
+A repo for testing out the google sign in logic with Flask and Python3
 
 ## Getting Started
 
