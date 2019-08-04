@@ -20,3 +20,7 @@ h1 {
 .sign-out {
     display: none;
 }
+
+.result {
+    margin-top: 2rem;
+}
