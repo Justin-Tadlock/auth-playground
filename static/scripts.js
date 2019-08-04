@@ -20,6 +20,15 @@ function signOut() {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
         console.log('Logging out the user.');
+
+        $.ajax({
+            type:'GET',
+            url:'/',
+            success: function() {
+                window.location.href = '/';
+            }
+        }) 
+
         showSignInBtn(true);
     }
     xhr.send('logout=true');
@@ -43,9 +52,20 @@ function onSignIn(googleUser) {
             response = JSON.parse(xhr.responseText);
 
             if (response['status'] == 200) {
-                $('.result').html(response['message']);
-                showSignInBtn(false);
+                $.ajax({
+                    type:'GET',
+                    url:'/',
+                    success: function() {
+                        result_text = response['message'] + " Reloading in 4 seconds...";
+                        $('.result').html(result_text);
+                        setTimeout(function() {
+                            window.location.href="/";
+                        }, 4000);
+                    }
+                })
             }
+
+            showSignInBtn(false);
         };
         xhr.send('idtoken=' + id_token);
     }
