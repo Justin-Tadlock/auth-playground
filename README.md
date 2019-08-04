@@ -51,7 +51,7 @@ vagrant ssh
 
 ##### You will also need to download the credentials json file from your Google Dev Console
 1. Go to your Google Dev Console Credentials section [here](https://console.developers.google.com/apis/credentials)
-2. Go to the credentials you created in the Pre-Req section, on the far right click the DOWN arrow to download the credentials in json format
+2. Go to the credentials you created in the Pre-Req section, on the far right click the **DOWN** arrow to download the credentials in json format
 3. Go to the location the file was downloaded, rename the file "client_secrets.json"
 4. Copy-paste the "client_secrets.json" file into your google-auth-playground app directory.
 5. You are done with this step
