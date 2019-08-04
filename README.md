@@ -42,12 +42,16 @@ vagrant up
 vagrant ssh
 ```
 7. Once the vagrant VM is running, navigate to the google-auth-playground app directory
-``` cd /vagrant/google-auth-playground ```
+``` 
+cd /vagrant/google-auth-playground 
+```
 
 ### Setting up the VM to run the web server
 
 ##### In order for the application to work, you must install the appropriate modules:
 ```pip3 install --upgrade -r requirements.txt```
+or
+``` sh ./get-prereqs.sh ```
 
 ##### You will also need to download the credentials json file from your Google Dev Console
 1. Go to your Google Dev Console Credentials section [here](https://console.developers.google.com/apis/credentials)
