@@ -39,5 +39,24 @@
         </div>
 
         <div class="result"></div>
+
+        <h3>Secret User Posts</h3>
+        <table>
+            <tr>
+                <th>User</th><th>Secret Message Posts</th>
+            </tr>
+            {% for user_post in user_posts %}
+            <tr>
+                <td>{{ user_post.name }}</td>
+                <td>
+                    {% if authenticated %}
+                        {{ user_post.secret }}
+                    {% else %}
+                        Hidden
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 </html>
