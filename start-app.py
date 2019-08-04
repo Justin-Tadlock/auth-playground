@@ -47,12 +47,7 @@ user_posts = [
 
 
 def Is_Authenticated():
-    logged_in = False
-
-    if 'user' in login_session:
-        logged_in = True
-
-    return logged_in
+    return ('user' in login_session)
 
 
 @app.route(CLIENT_REDIRECT, methods=['POST'])
