@@ -4,11 +4,17 @@ import httplib2
 
 from flask import (
     Flask, 
+    jsonify,
     session as login_session,
     redirect, 
     url_for, 
+    request,
+    make_response,
     render_template
 )
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 # Set up the application
 app = Flask(__name__)
@@ -38,15 +44,43 @@ def Is_Authenticated():
     
     return logged_in
 
-@app.route(CLIENT_REDIRECT)
+@app.route(CLIENT_REDIRECT, methods=['POST'])
 def Authentication_Callback():
-    # Add authentication logic here
+    try:
+        if 'idtoken' in request.form:
+            token = request.form['idtoken']
+        
+            # Specify the CLIENT_ID of the app that accesses the backend:
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 
-    return redirect(url_for('Index'))
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                raise ValueError('Wrong issuer.')
+
+            # ID token is valid. Get the user's Google Account ID from the decoded token.
+            userid = idinfo['sub']
+            login_session['user'] = token
+            ret_response = make_response(
+                jsonify(message='Successfully verified token id. You are logged in!', status=200)
+            )
+        else:
+            if 'user' in login_session:
+                print('Logged user with token \'%s\' out.' % login_session['user'])
+                login_session.pop('user', None)
+            ret_response = make_response(
+                jsonify(message="User has been logged out", status=200)
+            )
+            
+    except ValueError:
+        # Invalid token
+        ret_response = make_response(
+            jsonify(message='Error: unable to verify token id', status=401)
+        )
+
+    return ret_response
 
 @app.route('/')
 def Index():
-    return render_template('index.html', client_id=CLIENT_ID, logged_in=(Is_Authenticated()))
+    return render_template('index.html', client_id=CLIENT_ID, authenticated=Is_Authenticated())
 
 
 
