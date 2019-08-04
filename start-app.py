@@ -48,20 +48,25 @@ def Is_Authenticated():
 def Authentication_Callback():
     try:
         if 'idtoken' in request.form:
-            token = request.form['idtoken']
-        
-            # Specify the CLIENT_ID of the app that accesses the backend:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+            if not Is_Authenticated():
+                token = request.form['idtoken']
+            
+                # Specify the CLIENT_ID of the app that accesses the backend:
+                idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 
-            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-                raise ValueError('Wrong issuer.')
+                if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                    raise ValueError('Wrong issuer.')
 
-            # ID token is valid. Get the user's Google Account ID from the decoded token.
-            userid = idinfo['sub']
-            login_session['user'] = token
-            ret_response = make_response(
-                jsonify(message='Successfully verified token id. You are logged in!', status=200)
-            )
+                # ID token is valid. Get the user's Google Account ID from the decoded token.
+                userid = idinfo['sub']
+                login_session['user'] = token
+                ret_response = make_response(
+                    jsonify(message='Successfully verified token id. You are logged in!', status=200)
+                )
+            else:
+                ret_response = make_response(
+                    jsonify(message='User is already logged in.', status=201)
+                )
         else:
             if 'user' in login_session:
                 print('Logged user with token \'%s\' out.' % login_session['user'])
