@@ -22,11 +22,11 @@
         <h1>Google Authentication Playground Testing</h1>
         {% if authenticated %}
             <script src="{{ url_for('static', filename='scripts.js') }}">
-                setSignInBtn(false);
+                showSignInBtn(false);
             </script>
         {% else %}
             <script src="{{ url_for('static', filename='scripts.js') }}">
-                setSignInBtn(true);
+                showSignInBtn(true);
             </script>
         {% endif %}
         <div class='sign-in'>
