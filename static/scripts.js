@@ -15,7 +15,15 @@ function signOut() {
     console.log('User signed out.');
     });
 
-    showSignInBtn(true);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/oauthcallback');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        console.log('Logging out the user.');
+        showSignInBtn(true);
+    }
+    xhr.send('logout=true');
+    
 }
 
 function onSignIn(googleUser) {
@@ -26,6 +34,19 @@ function onSignIn(googleUser) {
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 
     if (profile != null) {
-        showSignInBtn(false);
+        var id_token = googleUser.getAuthResponse().id_token;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/oauthcallback');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            response = JSON.parse(xhr.responseText);
+
+            if (response['status'] == 200) {
+                $('.result').html(response['message']);
+                showSignInBtn(false);
+            }
+        };
+        xhr.send('idtoken=' + id_token);
     }
 }
