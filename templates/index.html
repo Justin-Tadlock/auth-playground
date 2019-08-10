@@ -25,48 +25,56 @@
     <div class="content">
         <h1>Authentication Playground Testing</h1>
 
-        <!-- Google Authentication -->
-        {% if authenticated %}
-            <script src="{{ url_for('static', filename='scripts.js') }}">
-                showSignInBtn(false);
-            </script>
-        {% else %}
-            <script src="{{ url_for('static', filename='scripts.js') }}">
-                showSignInBtn(true);
-            </script>
-        {% endif %}
-        <div class='sign-in'>
-            <div>Not currently logged in</div>
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        </div>
-        <div class='sign-out'>
-            <div>Currently logged in</div>
-            <a href="#" onclick="signOut();">Sign out</a>
-        </div>
+        <div class='login-banner'>
+            <!-- Google Authentication -->
+            <div class='google-auth'>
+                <div class='sign-in'>
+                    <div class="g-signin2" data-width="220" data-height="40" data-value="Sign in with Google" data-onsuccess="onSignIn" data-theme="dark"></div>
+                </div>
+                <div class='sign-out'>
+                    <a href="#" onclick="signOut();">Sign out</a>
+                </div>
+            </div>
 
-        <!-- Facebook Authentication -->
-        <div class="fb-login-button" data-width="" data-size="medium" data-button-type="login_with" data-auto-logout-link="true" data-use-continue-as="false"></div>
+            <!-- Facebook Authentication -->
+            <div class='facebook-auth'>
+                <div class="fb-login-button" data-width="50" data-size="large" data-button-type="login_with" data-auto-logout-link="true" data-use-continue-as="false" data-scope="public_profile, email"></div>
+            </div>
+        </div>
 
         <!-- Result for logging in confirmation-->
         <div class="result"></div>
 
-        <h3>Secret User Posts</h3>
-        <table>
-            <tr>
-                <th>User</th><th>Secret Message Posts</th>
-            </tr>
-            {% for user_post in user_posts %}
-            <tr>
-                <td>{{ user_post.name }}</td>
-                <td>
-                    {% if authenticated %}
-                        {{ user_post.secret }}
-                    {% else %}
-                        Hidden
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+        <!-- Used for stating if the user is logged in/out -->
+        <div class="mx-auto login-state">
+            <p>
+            {% if authenticated %}
+                Currently logged in
+            {% else %}
+                Not currently logged in
+            {% endif %}
+            </p>
+        </div>
+
+        <div class="mx-auto">
+            <h2>Secret User Posts</h2>
+            <table>
+                <tr>
+                    <th>User</th><th>Secret Message Posts</th>
+                </tr>
+                {% for user_post in user_posts %}
+                <tr>
+                    <td>{{ user_post.name }}</td>
+                    <td>
+                        {% if authenticated %}
+                            {{ user_post.secret }}
+                        {% else %}
+                            Hidden
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 </html>
