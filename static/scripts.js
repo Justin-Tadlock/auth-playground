@@ -1,3 +1,25 @@
+window.onload = function() {
+    $('.g-signin2 div div span span:last').text("Sign in with Google");
+    $('.g-signin2 div div span span:first').text("Sign in with Google");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/authenticated');
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        var response = JSON.parse(xhr.responseText);
+
+        console.log(response);
+        if (response.data) {
+            console.log("Logged in");
+            showSignInBtn(false);
+        }
+        else {
+            console.log("Not logged in");
+            showSignInBtn(true);
+        }
+    }
+    xhr.send()
+}
 function showSignInBtn(setVisible) {
     if(setVisible) {
         $('.sign-in').css('display', 'block');
@@ -21,15 +43,7 @@ function signOut() {
     xhr.onload = function() {
         console.log('Logging out the user.');
 
-        $.ajax({
-            type:'GET',
-            url:'/',
-            success: function() {
-                window.location.href = '/';
-            }
-        }) 
-
-        showSignInBtn(true);
+        window.location.href = '/';
     }
     xhr.send('logout=true');
     
@@ -37,11 +51,7 @@ function signOut() {
 
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
+    
     if (profile != null) {
         var id_token = googleUser.getAuthResponse().id_token;
 
@@ -49,9 +59,9 @@ function onSignIn(googleUser) {
         xhr.open('POST', '/oauthcallback');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
-            response = JSON.parse(xhr.responseText);
+            var response = JSON.parse(xhr.responseText);
 
-            if (response['status'] == 200) {
+            if (response['data'] == "Logged In") {
                 $.ajax({
                     type:'GET',
                     url:'/',
@@ -64,8 +74,6 @@ function onSignIn(googleUser) {
                     }
                 })
             }
-
-            showSignInBtn(false);
         };
         xhr.send('idtoken=' + id_token);
     }

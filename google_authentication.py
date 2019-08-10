@@ -2,7 +2,6 @@ import json
 
 from flask import (
     jsonify,
-    session as login_session,
     request,
     make_response
 )
@@ -23,78 +22,46 @@ try:
 except:
     print('Error: Please download your \'client_secrets.json\' file from your \'https://console.developers.google.com\' project')
 
-
-def Is_Authenticated():
-    return ('user' in login_session)
-
-
 def Authentication_Callback():
+    user_data = None
+
     try:
         # Check if the POST request is trying to log in
         if 'idtoken' in request.form:
-            if not Is_Authenticated():
-                # Get the token from the POST form
-                token = request.form['idtoken']
+            # Get the token from the POST form
+            token = request.form['idtoken']
 
-                # Specify the CLIENT_ID of the app that accesses the backend:
-                idinfo = id_token.verify_oauth2_token(
-                    token,
-                    requests.Request(),
-                    CLIENT_ID
-                )
+            # Specify the CLIENT_ID of the app that accesses the backend:
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                CLIENT_ID
+            )
 
-                verified_providers = [
-                    'accounts.google.com',
-                    'https://accounts.google.com'
-                ]
+            verified_providers = [
+                'accounts.google.com',
+                'https://accounts.google.com'
+            ]
 
-                if idinfo['iss'] not in verified_providers:
-                    raise ValueError('Wrong issuer.')
+            if idinfo['iss'] not in verified_providers:
+                raise ValueError('Wrong issuer.')
 
-                # ID token is valid.
-                # Get the user's Google Account ID from the decoded token.
-                userid = idinfo['sub']
+            # ID token is valid.
+            # Get the user's Google Account ID from the decoded token.
+            userid = idinfo['sub']
 
-                # Add the token to the flask session variable
-                login_session['user'] = {
-                    'name': idinfo['name'],
-                    'email': idinfo['email'],
-                    'picture': idinfo['picture']
-                }
-
-                ret_response = make_response(
-                    jsonify(
-                        message='Successfully verified. You are logged in!',
-                        status=200,
-                        data="Logged In"
-                    )
-                )
-
-            # If the user is already logged in,
-            # we don't need to do any authentication.
-            else:
-                ret_response = make_response(
-                    jsonify(
-                        message='User is already logged in.', 
-                        status=200,
-                        data="Already Logged In"
-                    )
-                )
-
-        # If the POST request does not contain the idtoken field,
-        # that means we are trying to log out.
-        else:
-            # When we have a logged in user,
-            # we should remove their token from our
-            # logged in sessions variable
-            if Is_Authenticated():
-                login_session.pop('user', None)
+            # Add the token to the flask session variable
+            user_data = {
+                'name': idinfo['name'],
+                'email': idinfo['email'],
+                'picture': idinfo['picture']
+            }
 
             ret_response = make_response(
                 jsonify(
-                    message="User has been logged out", 
-                    status=200, 
-                    data="Logged Out"
+                    message="Successfully verified token id",
+                    status=200,
+                    data="Logged In"
                 )
             )
 
@@ -104,8 +71,8 @@ def Authentication_Callback():
             jsonify(message='Error: unable to verify token id', status=401)
         )
 
-    if Is_Authenticated():
-        user_data_json = json.dumps(login_session['user'])
+    if user_data:
+        user_data_json = json.dumps(user_data)
     else:
         user_data_json = None
 

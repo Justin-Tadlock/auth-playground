@@ -34,22 +34,47 @@ user_posts = [
 ]
 
 
+def Is_Authenticated():
+    return ('user' in login_session)
+
+@app.route('/authenticated')
+def Authenticated():
+    if Is_Authenticated():
+        return make_response(jsonify(message="User is already logged in", status=200, data=True))
+    else:
+        return make_response(jsonify(message="User is not logged in", status=200, data=False))
+
+
 @app.route('/')
 def Index():
     return render_template(
         'index.html',
         client_id=gAuth.CLIENT_ID,
-        authenticated=gAuth.Is_Authenticated(),
+        authenticated=Is_Authenticated(),
         user_posts=user_posts
     )
 
+
 @app.route(gAuth.CLIENT_REDIRECT, methods=['POST'])
-def Google_Authenticat():
-    return gAuth.Authentication_Callback()
+def Google_Authenticate():
+    
+    if not Is_Authenticated():
+        response, user_data = gAuth.Authentication_Callback()
+        login_session['user'] = user_data
+        print(login_session['user'])
+
+        return response
+    
+    if 'logout' in request.form:
+        if Is_Authenticated():
+            login_session.pop('user', None)
+
+    return make_response(jsonify(message="Already logged in", status=200, data="Already Logged In"))
 
 if __name__ == '__main__':
     app.debug = True
     app.run(
+        ssl_context="adhoc",
         host='0.0.0.0',
         port=5000
     )
