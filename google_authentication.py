@@ -56,19 +56,29 @@ def Authentication_Callback():
                 userid = idinfo['sub']
 
                 # Add the token to the flask session variable
-                login_session['user'] = token
+                login_session['user'] = {
+                    'name': idinfo['name'],
+                    'email': idinfo['email'],
+                    'picture': idinfo['picture']
+                }
 
                 ret_response = make_response(
                     jsonify(
                         message='Successfully verified. You are logged in!',
-                        status=200)
+                        status=200,
+                        data="Logged In"
+                    )
                 )
 
             # If the user is already logged in,
             # we don't need to do any authentication.
             else:
                 ret_response = make_response(
-                    jsonify(message='User is already logged in.', status=201)
+                    jsonify(
+                        message='User is already logged in.', 
+                        status=200,
+                        data="Already Logged In"
+                    )
                 )
 
         # If the POST request does not contain the idtoken field,
@@ -81,7 +91,11 @@ def Authentication_Callback():
                 login_session.pop('user', None)
 
             ret_response = make_response(
-                jsonify(message="User has been logged out", status=200)
+                jsonify(
+                    message="User has been logged out", 
+                    status=200, 
+                    data="Logged Out"
+                )
             )
 
     except ValueError:
@@ -90,4 +104,9 @@ def Authentication_Callback():
             jsonify(message='Error: unable to verify token id', status=401)
         )
 
-    return ret_response
+    if Is_Authenticated():
+        user_data_json = json.dumps(login_session['user'])
+    else:
+        user_data_json = None
+
+    return ret_response, user_data_json
