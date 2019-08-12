@@ -1,4 +1,6 @@
 import json
+import httplib2
+import sys
 
 from flask import (
     jsonify,
@@ -14,11 +16,14 @@ try:
 
     # Get the redirect uri from the file in the form of '/url'
     CLIENT_REDIRECT = "/oauthcallback"
-except:
+except IOError as ioe:
     print('Error: Could not load the client secrets for the Facebook app.')
+    print(ioe.pgerror)
+    print(ioe.diag.message_detail)
+    sys.exit(1)
 
-def Authentication_Callback():
 
-    return make_response(
-        jsonify(message="Test", status=200)
-    )
+def Facebook_Callback():
+    print('Enter Facebook_Callback()')
+
+    return 'TODO: ADD ME'

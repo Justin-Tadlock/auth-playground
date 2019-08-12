@@ -19,6 +19,7 @@ from flask import (
 from flask_cors import CORS, cross_origin
 
 import google_authentication as gAuth
+import facebook_authentication as fbAuth
 
 
 # Set up the application
@@ -134,13 +135,31 @@ def G_Login():
         return redirect(url_for('Index'))
 
 
-        return response
+@app.route('/fbconnect')
+def FB_Login():
+    print('Attempting to log in to facebook...')
     
-    if 'logout' in request.form:
-        if Is_Authenticated():
-            login_session.pop('user', None)
 
-    return make_response(jsonify(message="Already logged in", status=200, data="Already Logged In"))
+    return redirect(url_for('Index'))
+
+
+@app.route('/fbcallback')
+def FB_Callback():
+    print('Enter FB_Callback():')
+    
+    return redirect(url_for('Index'))
+
+
+@app.route('/logout', methods=['POST'])
+def Logout():
+    Logout_Session()
+
+    return make_response(jsonify(
+        message="User logged out",
+        status=200,
+        data="Logged Out"
+    ))
+
 
 if __name__ == '__main__':
     context = ('server.crt', 'server.key') #certificate and key files
