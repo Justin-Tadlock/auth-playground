@@ -31,7 +31,7 @@ def Facebook_Callback(access_token, user_id):
     graph_api = facebook.GraphAPI(access_token)
 
     if graph_api:
-        user_json = graph_api.get_object('me', fields="name")
+        user_json = graph_api.get_object('me', fields="name,email")
 
         if user_json:
             user_data = user_json
