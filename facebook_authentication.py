@@ -36,8 +36,6 @@ def Facebook_Callback(access_token, user_id):
         if user_json:
             user_data = user_json
             user_data['accessToken'] = access_token
-
-            print('user data: ', user_data)
         else:
             user_data = None
 
