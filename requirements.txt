@@ -5,3 +5,4 @@ protobuf==3.9.0
 google-auth==1.6.3
 pyOpenSSL==19.0.0
 flask-cors
+facebook-sdk

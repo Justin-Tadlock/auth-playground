@@ -135,12 +135,52 @@ def G_Login():
         return redirect(url_for('Index'))
 
 
-@app.route('/fbconnect')
+@app.route('/fbconnect', methods=['POST'])
 def FB_Login():
     print('Attempting to log in to facebook...')
     
+    form = request.form
 
-    return redirect(url_for('Index'))
+    if 'state' in form:
+        if form['state'] != login_session['state']:
+            return make_response(jsonify(
+                message='State token does not match.',
+                status=401
+            ))
+        
+        user_data = fbAuth.Facebook_Callback(
+            form['accessToken'], 
+            form['user_id']
+        )
+
+        if user_data:
+            login_session['user'] = user_data
+            
+            return make_response(jsonify(
+                message="Successfully logged in.",
+                status=200,
+                data=True
+            ))
+        else:
+            Logout_Session()
+
+            return make_response(jsonify(
+                message="User data could not be retrieved.",
+                status=401
+            ))
+    else:
+        print('Error: State is not within the request.')
+
+        return make_response(jsonify(
+            message="State is not within the request.", 
+            status=401
+        ))
+    
+    return make_response(jsonify(
+        message="Could not log in user.",
+        status=401
+    ))
+    
 
 
 @app.route('/fbcallback')

@@ -8,6 +8,8 @@ from flask import (
     make_response
 )
 
+import facebook
+
 # Get Secrets Data
 try:
     SECRET_DATA = json.loads(open('fb_client_secrets.json', 'r').read())['web']
@@ -23,7 +25,20 @@ except IOError as ioe:
     sys.exit(1)
 
 
-def Facebook_Callback():
+def Facebook_Callback(access_token, user_id):
     print('Enter Facebook_Callback()')
 
-    return 'TODO: ADD ME'
+    graph_api = facebook.GraphAPI(access_token)
+
+    if graph_api:
+        user_json = graph_api.get_object('me', fields="name")
+
+        if user_json:
+            user_data = user_json
+            user_data['accessToken'] = access_token
+
+            print('user data: ', user_data)
+        else:
+            user_data = None
+
+    return user_data
