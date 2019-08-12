@@ -114,11 +114,11 @@ window.fbAsyncInit = function() {
 
 function showSignInBtn(setVisible) {
     if(setVisible) {
-        $('.sign-in').css('display', 'block');
+        $('.google-auth, .facebook-auth').css('display', 'block');
         $('.sign-out').css('display', 'none');
     }
     else {
-        $('.sign-in').css('display', 'none');
+        $('.google-auth, .facebook-auth').css('display', 'none');
         $('.sign-out').css('display', 'block');
     }
 }
