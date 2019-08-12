@@ -30,7 +30,9 @@ h1 {
     margin: auto;
 }
 .login-banner > div {
-    width: 50%;
+    margin-right: 1rem;
+}
+.login-banner > div:last-child {
     margin: auto;
 }
 
