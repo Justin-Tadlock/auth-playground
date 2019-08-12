@@ -1,8 +1,9 @@
-
 window.onload = function() {
-    $('.g-signin2 div div span span:last').text("Sign in with Google");
-    $('.g-signin2 div div span span:first').text("Sign in with Google");
 
+    checkAuthenticated();
+}
+
+function checkAuthenticated() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/authenticated');
     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
@@ -19,7 +20,9 @@ window.onload = function() {
             showSignInBtn(true);
         }
     }
-    xhr.send()
+    xhr.send();
+}
+
 }
 
 // This is called with the results from from FB.getLoginStatus().
