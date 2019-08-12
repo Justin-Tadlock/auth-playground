@@ -116,11 +116,20 @@ function statusChangeCallback(response) {
 }
 
 
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        printLog('User signed out.');
+    });
 
+    if (FB.getAccessToken() != null) {
+        FB.logout(function(response) {
+            // user is now logged out from facebook
+        });
+    }
 
-
-
-
+    logout();
+}
 
 
 function logout() {
@@ -139,21 +148,6 @@ function logout() {
     xhr.send('logout=true');
 }
 
-
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-        printLog('User signed out.');
-    });
-
-    if (FB.getAccessToken() != null) {
-        FB.logout(function(response) {
-            // user is now logged out from facebook
-        });
-    }
-
-    logout();
-}
 
 function onSignIn(googleUser) {
     printLog("Enter onSignIn()"); 
