@@ -1,4 +1,5 @@
 import json
+import sys
 
 from flask import (
     jsonify,
@@ -19,10 +20,14 @@ try:
     # Get the redirect uri from the file in the form of '/url'
     CLIENT_REDIRECT = SECRET_DATA['redirect_uris'][0]
     CLIENT_REDIRECT = '/%s' % (CLIENT_REDIRECT.split('/')[-1])
-except:
+except IOError as ioe:
     print('Error: Please download your \'client_secrets.json\' file from your \'https://console.developers.google.com\' project')
+    print(ioe.pgerror)
+    print(ioe.diag.message_detail)
+    sys.exit(1)
 
-def Authentication_Callback():
+
+def Google_Callback():
     user_data = None
 
     try:
@@ -57,23 +62,13 @@ def Authentication_Callback():
                 'picture': idinfo['picture']
             }
 
-            ret_response = make_response(
-                jsonify(
-                    message="Successfully verified token id",
-                    status=200,
-                    data="Logged In"
-                )
-            )
-
     except ValueError:
         # Invalid token
-        ret_response = make_response(
-            jsonify(message='Error: unable to verify token id', status=401)
-        )
+        print('Error: Unable to verify the token id')
 
     if user_data:
         user_data_json = json.dumps(user_data)
     else:
         user_data_json = None
 
-    return ret_response, user_data_json
+    return user_data_json

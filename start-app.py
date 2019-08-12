@@ -15,6 +15,7 @@ from flask import (
 
 import google_authentication as gAuth
 
+import google_authentication as gAuth
 
 
 # Set up the application
@@ -37,6 +38,15 @@ user_posts = [
 def Is_Authenticated():
     return ('user' in login_session)
 
+
+def Logout_Session():
+    if Is_Authenticated():
+        print("Logging out the user")
+        login_session.pop('user', None)
+        login_session.pop('state', None)
+
+
+
 @app.route('/authenticated')
 def Authenticated():
     if Is_Authenticated():
@@ -55,13 +65,46 @@ def Index():
     )
 
 
-@app.route(gAuth.CLIENT_REDIRECT, methods=['POST'])
-def Google_Authenticate():
+@app.route('/gconnect', methods=['POST'])
+def G_Login():
+    print('Enter G_Login()')
     
-    if not Is_Authenticated():
-        response, user_data = gAuth.Authentication_Callback()
-        login_session['user'] = user_data
-        print(login_session['user'])
+    if 'state' in request.form:
+        if request.form['state'] != login_session['state']:
+            return redirect(url_for('Index'))
+
+        if not Is_Authenticated():
+            print('Attempt to log in to Google...')
+            user_json = gAuth.Google_Callback()
+
+            if user_json:
+                user_data = json.loads(user_json)
+                
+                login_session['user'] = {
+                    'name' : user_data['name'],
+                    'picture' : user_data['picture'],
+                    'email' : user_data['email']
+                }
+
+            else:
+                Logout_Session()
+            
+            return make_response(jsonify(
+                message="Successfully logged in. Reload the page.",
+                status=200,
+                data=True
+            ))
+        else:
+            return make_response(jsonify(
+                message="Already logged in", 
+                status=200,
+                data=False
+            ))        
+    else:
+        print('Error: \'state\' is not within the request')
+
+        return redirect(url_for('Index'))
+
 
         return response
     
