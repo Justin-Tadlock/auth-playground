@@ -31,7 +31,7 @@
             <div class='google-auth'>
                 <div class='sign-in'>
                     <div class="g-signin2" 
-                         data-width="220" 
+                         data-width="220"
                          data-height="40" 
                          data-longtitle="true"
                          data-onsuccess="onSignIn" 
@@ -43,7 +43,19 @@
 
             <!-- Facebook Authentication -->
             <div class='facebook-auth'>
-                <div class="fb-login-button" data-width="50" data-size="large" data-button-type="login_with" data-auto-logout-link="true" data-use-continue-as="false" data-scope="public_profile, email"></div>
+                <div class="fb-login-button" 
+                     data-width="220" 
+                     data-size="large" 
+                     data-button-type="login_with" 
+                     data-auto-logout-link="false" 
+                     data-use-continue-as="false"
+                     onlogin="checkLoginState();">
+                </div>
+            </div>
+            <br>
+
+            <div class='sign-out'>
+                <a href="#" onclick="signOut();">Sign out</a>
             </div>
         </div>
 
