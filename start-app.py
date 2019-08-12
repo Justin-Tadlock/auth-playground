@@ -59,8 +59,6 @@ def Generate_State():
 
 
 def Is_Authenticated():
-    print(login_session)
-
     return ('user' in login_session)
 
 
